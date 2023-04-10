@@ -1,0 +1,74 @@
+.center {
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    display: grid;
+  }
+.home{
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+}
+    
+.card {
+box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+transition: 0.3s;
+min-height: 300px;
+margin: 20x;
+padding: 20px;
+}
+
+.card:hover {
+box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+}
+
+.container {
+padding: 10px;
+margin: 10px;
+}
+
+.weak_password {
+  display: inline-block;
+  position: relative;
+  left: -100%;
+  padding: 0;
+  margin: 0;
+  color: gray;
+}
+
+.strong_password {
+  display: inline-block;
+  position: relative;
+  left: 100%;
+  padding: 0;
+  margin: 0;
+  color: gray;
+}
+
+.password_row {
+  width: 80%;
+  text-align: center;
+  margin: auto;
+  padding: 0;
+  font-size: 12px;
+}   
+.showhidepasswordbutton{
+  padding: 5px;
+  margin: 0px;
+}
+
+.g-recaptcha {
+  display: inline-block;
+}
+
+
+
+.signup-button{
+  padding: 10px;
+  margin: 10px;
+  width: 70%;
+  background-color: rgb(122, 195, 238);
+  border: none;
+  border-radius: 5px;
+  font-size: 15px;
+}
