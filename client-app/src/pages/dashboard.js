@@ -10,21 +10,21 @@ const Dashboard = () => {
 
     //put some text message added to the user model on the dashboard
     async function populateQuote(){
-        const request = await fetch('http://localhost:5000/api/quote', {
-            method:'GET',
+        await fetch('http://localhost:5000/api/quote', {
             headers:{
                 'x-access-token': localStorage.getItem('token')
             }
-        }); 
-
-        const req_data = request.json()
-        console.log(req_data);
-        if (req_data.status === 'ok'){
-            console.log(req_data.quote);
-            setQuote(req_data.quote);
-        } else {
-            alert(req_data.error);
-        }
+        }).then( response => {
+            if (response.ok){
+                return response.json();
+            } else {
+                throw new Error("Server error");
+            }
+        } ).then( data => {
+            setQuote(data.quote);
+        }).catch ( error => {
+            console.error("fetch operation failed");
+        } );
     }
 
     // react function to persist the token (with data) of the user from the login page
@@ -32,7 +32,6 @@ const Dashboard = () => {
         const token = localStorage.getItem('token');
         if (token){
             const user = jwt_decode(token);
-            console.log(user)
             if (!user){
                 localStorage.removeItem('token');
                 navigator('/');
@@ -44,7 +43,7 @@ const Dashboard = () => {
 
     async function updateQuote(event){
         event.preventDefault();
-        const req = await fetch('http://localhost:5000/api/quote', {
+        const request = await fetch('http://localhost:5000/api/quote', {
             method: 'POST',
             headers: {
                 'Content-Type':'application/json',
@@ -54,7 +53,7 @@ const Dashboard = () => {
                 quote: message,
             }) 
         });
-        const req_data = await req.json();
+        const req_data = await request.json();
         if (req_data.status === 'ok'){
             setQuote(message);
             setMessage('');
