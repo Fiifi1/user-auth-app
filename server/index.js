@@ -2,6 +2,7 @@
 const express_server = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
+const cron = require('node-cron');
 const axios = require('axios');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
@@ -12,7 +13,6 @@ const auth_token = require('./models/one_time_token');
 const dotenv = require('dotenv');
 const app = express_server();
 
-//const cron = require('node-cron');
 
 dotenv.config();
 
@@ -82,7 +82,6 @@ app.get('/api/quote', async (req, res) => {
 
         return res.json({status:'ok', quote: user_data.quote});
     } catch (error){
-        console(error);
         res.json({status:'error', error: 'bad token'})
     };
 });
@@ -100,7 +99,6 @@ app.post('/api/quote', async (req, res) => {
 
         return res.json({status:'ok'});
     } catch(e){
-        console.log(e);
         res.json({status:'error', error: 'bad token'})
     }
 });
@@ -165,16 +163,16 @@ async function generate_token(email) {
     
   }
 
-// A cron job that would delete expired tokens on a daily basis
-// cron.schedule('0 0 * * *', async () => {
-//   try {
-//     const expired_tokens = await auth_token.find({ expires_at: { $lt: new Date() } });
-//     await auth_token.deleteMany({ _id: { $in: expires_at.map(record => record._id) } });
-//     console.log(`Removed ${expired_tokens.length} expired token records`);
-//   } catch (err) {
-//     console.error('Error removing expired token records:', err);
-//   }
-// });
+// cron job to delete expired tokens on a daily basis 
+cron.schedule('0 0 * * *', async () => {
+  try {
+    const expired_tokens = await auth_token.find({ expires_at: { $lt: new Date() } });
+    await auth_token.deleteMany({ _id: { $in: expires_at.map(record => record._id) } });
+    console.log(`Removed ${expired_tokens.length} expired token records`);
+  } catch (err) {
+    console.error('Error removing expired token records:', err);
+  }
+});
 
 
 
