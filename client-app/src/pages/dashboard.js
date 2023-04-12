@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import jwt_decode from 'jwt-decode';
 import { useNavigate } from 'react-router-dom';
 import './styles.css'
 
 const Dashboard = () => {
     const navigator = useNavigate();
+    const effect_once = useRef(false);
     const [quote, setQuote] = useState('');
     const [message, setMessage] = useState('');
 
@@ -29,15 +30,20 @@ const Dashboard = () => {
 
     // react function to persist the token (with data) of the user from the login page
     useEffect(()=>{
-        const token = localStorage.getItem('token');
-        if (token){
-            const user = jwt_decode(token);
-            if (!user){
-                localStorage.removeItem('token');
-                navigator('/');
-            } else {
-                populateQuote();
-            }
+        if (effect_once.current === true){
+            const token = localStorage.getItem('token');
+            if (token){
+                const user = jwt_decode(token);
+                if (!user){
+                    localStorage.removeItem('token');
+                    navigator('/');
+                } else {
+                    populateQuote();
+                }
+            }        
+        }
+        return () => {
+            effect_once.current = true;
         }
     }, [navigator]);
 
