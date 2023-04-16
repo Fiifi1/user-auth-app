@@ -6,8 +6,9 @@ import './styles.css'
 const Dashboard = () => {
     const navigator = useNavigate();
     const effect_once = useRef(false);
-    const [quote, setQuote] = useState('');
-    const [message, setMessage] = useState('');
+    const [user, set_user] = useState(null);
+    const [quote, set_quote] = useState('');
+    const [message, set_message] = useState('');
 
     //put some text message added to the user model on the dashboard
     async function populateQuote(){
@@ -20,9 +21,9 @@ const Dashboard = () => {
                 return response.json();
             } else {
                 throw new Error("Server error");
-            }
+            }   
         } ).then( data => {
-            setQuote(data.quote);
+            set_quote(data.quote);
         }).catch ( error => {
             console.error("fetch operation failed");
         } );
@@ -33,15 +34,20 @@ const Dashboard = () => {
         if (effect_once.current === true){
             const token = localStorage.getItem('token');
             if (token){
-                const user = jwt_decode(token);
-                if (!user){
-                    localStorage.removeItem('token');
-                    navigator('/');
-                } else {
+                const current_user = jwt_decode(token);
+                if (!current_user){
+                    alert('You need to sign in first');
+                    navigator('/signin');
+                } else{
+                    set_user(current_user);
                     populateQuote();
                 }
-            }        
-        }
+            }else{
+                alert('You must be a valid user to access the dashboard');
+                navigator('/')
+            }
+         
+           }        
         return () => {
             effect_once.current = true;
         }
@@ -61,22 +67,33 @@ const Dashboard = () => {
         });
         const req_data = await request.json();
         if (req_data.status === 'ok'){
-            setQuote(message);
-            setMessage('');
+            set_quote(message);
+            set_message('');
         } else{
             alert(req_data.error);
         }
     };
 
+    const sign_out = () => {
+        set_user(null);
+        navigator('/signin');
+        localStorage.removeItem('token');
+    };
+
     return (
-        <div className='center'>
-            <h3>Your message: { quote || 'You have no message yet !' }</h3>
-            <form onSubmit={updateQuote}>
-                <textarea className='container' placeholder="Type a message here" value={ message } onChange={(e)=>setMessage(e.target.value)}/>
-                <br/>
-                <input className='container' type="submit" value="update message" />
-                <button type='button'>logout</button>
-            </form>
+        <div>
+            {user && (
+                <div className='center'>
+                    <h2>Welcome to your Dashboard, {user && user.username} !</h2>
+                    <h4>Your message: { quote || 'You have no message yet !' }</h4>
+                    <form onSubmit={updateQuote}>
+                        <textarea className='container' placeholder="Type a message here" value={ message } onChange={(e)=>set_message(e.target.value)}/>
+                        <br/>
+                        <input className='container' type="submit" value="update message" />
+                        <button type='button' className='container' onClick={sign_out} >Sign Out</button>
+                    </form>
+            </div>
+            )}
         </div>
     )
 };
