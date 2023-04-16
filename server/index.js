@@ -60,7 +60,7 @@ app.post('/api/signin', async (req, res) => {
     const is_password_ok = await bcrypt.compare(req.body.password, user_data.password);
 
     if(is_password_ok){
-        generate_token(req.body.email);
+        generate_token(req.body.email, user_data.username);
         const token = jwt.sign({
             username:user_data.username,
             email: user_data.email,
@@ -98,32 +98,43 @@ app.post('/api/quote', async (req, res) => {
             )
 
         return res.json({status:'ok'});
-    } catch(e){
+    } 
+    catch(e){
         res.json({status:'error', error: 'bad token'})
     }
 });
 
 app.post('/api/verify_token', async (req, res) => {
+    
+    console.log('verify: ', req.body);
+
     const { email, token } = req.body;
+    try{
+        const valid_token = await auth_token.findOne({email:email, unique_token: token});
 
-    const valid_token = await auth_token.findOne({email:email, unique_token: token});
+        console.log(valid_token);
+        
+        if (valid_token === null){
+            return res.json({status:'error', message:'token is invalid or has expired'});
+        }
 
-    if (!valid_token){
-        return res.json({status:'error', message:'token is invalid or has expired'});
-    }
+        if (valid_token.expires_at < new Date()){
+            // Token has expired, must be deleted asap
+            await auth_token.deleteOne({_id: valid_token._id});
+            return res.json({status:'error', message:'token is invalid or has expired'});
+        }
 
-    if (valid_token.expires_at < new Date()){
-        //Token has expired, must be deleted asap
         await auth_token.deleteOne({_id: valid_token._id});
-        return res.json({status:'error', message:'token is invalid or has expired'})
+
+        return res.json({status:'ok', message:'Verification successful '})
+        } 
+    catch(error) {
+        
     }
-
-    await auth_token.deleteOne({_id: valid_token._id});
-
-    return res.json({status:'ok', message:'Verification successful '})
+    
 });
 
-async function generate_token(email) {
+async function generate_token(email, username) {
     const unique_token = uuidv4();
     const expires_at = new Date(Date.now() + 1800000); // Token expires in 30mins
     try{
@@ -143,18 +154,24 @@ async function generate_token(email) {
         let message = {
             from: process.env.EMAIL,
             to: email,
-            subject: "Your Authentication Token ✔",
-            html: `<p>Kindly use the token ${unique_token} to complete the login to your account, this token will expire at ${expires_at}.</p>`,
-            //text: `Kindly use the token ${unique_token} to complete the login to your account, this token will expire at ${expires_at}.`
+            subject: "One Time Token",
+            html: `<div>
+                <p>Dear ${username},</p>
+                <p>Kindly use the one time token below to complete the login into your account, this token will expire on <em>${expires_at}</em>.</p>
+                <p>Do not share this token with anyone!</>
+                <p>Token: <em>${unique_token}</em></>
+                <br/><br/><br/><br/>
+                <h5><em>This is an auto generated message, do not reply</em></h5>
+                    </div>`,
           }
         
           // send mail with defined transport object
-          await transporter.sendMail(message, (err, info) => {
-            if(err){
-                console.log("Email could not be sent: " + err.message);
-                return process.exit(1);
-            }
-          });
+        //   await transporter.sendMail(message, (err, info) => {
+        //     if(err){
+        //         console.log("Email could not be sent: " + err.message);
+        //         return process.exit(1);
+        //     }
+        //   });
         
 
     } catch (error){
