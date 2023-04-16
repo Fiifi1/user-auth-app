@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Verifytoken from './verify_token';
+//import Verifytoken from './verify_token';
+import TestComponent from './testPage';
 import './styles.css';
 
 function Signin() {
@@ -9,8 +10,9 @@ function Signin() {
   const [password, set_password] = useState('');
   const [submitted, set_submitted] = useState(false);
   const navigator = useNavigate();
+  const exec_once = useRef(false);
   
-  //fired when the sign in button is clicked
+  // submit signin form
   async function signin(event){
     event.preventDefault()
 
@@ -27,17 +29,28 @@ function Signin() {
     // validate the user and move on to dashboard if successful else
     // alert user of invalid credentials and go back to homepage
     const user_data = await response.json();
+
     if (user_data.user){
-      localStorage.setItem('token', user_data.user);
-      alert('Check your email for one-time-token');
-      set_submitted(true);
-      navigator('/verify');
-    } else {
-        console.log(user_data.message)
+        localStorage.setItem('token', user_data.user);
+        alert('Check your email for the one-time-token');
+        set_submitted(true);
+        console.log(typeof email, email);
+        navigator('/test');
+    } 
+    else {
         alert('Invalid email and password');
         navigator('/signin');
     }
   };
+
+  useEffect(() => {
+    if (exec_once.current === true) {
+      // Wait for the email value to be set before rendering Verifytoken component
+      if (submitted && email) {
+        console.log(email);
+      }
+    }
+  }, [email, submitted]);
 
   return (
     <div>
@@ -52,7 +65,7 @@ function Signin() {
           <br/>
         </form>
       </div>)}
-      {submitted && <Verifytoken email={email} />}
+      {submitted && <TestComponent email={email} />}
     </div>
   );
 }
