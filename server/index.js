@@ -106,22 +106,17 @@ app.post('/api/quote', async (req, res) => {
 
 app.post('/api/verify_token', async (req, res) => {
     
-    console.log('verify: ', req.body);
-
-    const { email, token } = req.body;
     try{
-        const valid_token = await auth_token.findOne({email:email, unique_token: token});
-
-        console.log(valid_token);
+        const valid_token = await auth_token.findOne({email:req.body.email, unique_token: req.body.token});
         
-        if (valid_token === null){
-            return res.json({status:'error', message:'token is invalid or has expired'});
+        if (!valid_token){
+            return res.json({status:'error', message:'token is invalid'});
         }
 
         if (valid_token.expires_at < new Date()){
             // Token has expired, must be deleted asap
             await auth_token.deleteOne({_id: valid_token._id});
-            return res.json({status:'error', message:'token is invalid or has expired'});
+            return res.json({status:'error', message:'token has expired'});
         }
 
         await auth_token.deleteOne({_id: valid_token._id});
@@ -166,12 +161,12 @@ async function generate_token(email, username) {
           }
         
           // send mail with defined transport object
-        //   await transporter.sendMail(message, (err, info) => {
-        //     if(err){
-        //         console.log("Email could not be sent: " + err.message);
-        //         return process.exit(1);
-        //     }
-        //   });
+          await transporter.sendMail(message, (err, info) => {
+            if(err){
+                console.log("Email could not be sent: " + err.message);
+                return process.exit(1);
+            }
+          });
         
 
     } catch (error){
