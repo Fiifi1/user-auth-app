@@ -16,6 +16,7 @@ transition: 0.3s;
 min-height: 300px;
 margin: 20x;
 padding: 20px;
+background-color: aliceblue;
 }
 
 .card:hover {
