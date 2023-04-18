@@ -19,7 +19,7 @@ dotenv.config();
 app.use(cors());    
 app.use(express_server.json());
 
-mongoose.connect('mongodb://localhost:27017/user-auth-db');
+mongoose.connect(process.env.MONGODB_URI);
 
 app.post('/api/signup', async (req, res) => {
     
@@ -65,7 +65,7 @@ app.post('/api/signin', async (req, res) => {
             username:user_data.username,
             email: user_data.email,
 
-        }, 'sseeccuurreekkeeyy123');
+        }, process.env.JWT_SECRET);
         return res.json({status:'ok', user:token});
     } else{
         return res.json({status: 'error', user: false, message:"incorrect credentials"});
@@ -76,7 +76,7 @@ app.get('/api/quote', async (req, res) => {
     const token = req.headers['x-access-token'];
 
     try{
-        const decoded_token = jwt.verify(token, 'sseeccuurreekkeeyy123');
+        const decoded_token = jwt.verify(token, process.env.JWT_SECRET);
         const email = decoded_token.email;
         const user_data = await user.findOne({email:email});
 
@@ -90,7 +90,7 @@ app.post('/api/quote', async (req, res) => {
     const token = req.headers['x-access-token'];
 
     try{
-        const decoded_token = jwt.verify(token, 'sseeccuurreekkeeyy123');
+        const decoded_token = jwt.verify(token, process.env.JWT_SECRET);
         const email = decoded_token.email;
         await user.updateOne(
             {email:email},
@@ -187,7 +187,8 @@ cron.schedule('0 0 * * *', async () => {
 });
 
 
+const PORT = process.env.PORT || 5000;
 
-app.listen (5000, () => {
+app.listen (PORT, () => {
     console.log('Running on port 5000')
 });
