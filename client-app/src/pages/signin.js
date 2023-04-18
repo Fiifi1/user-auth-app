@@ -1,7 +1,6 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-//import Verifytoken from './verify_token';
-import TestComponent from './testPage';
+import Verifytoken from './verify_token';
 import './styles.css';
 
 function Signin() {
@@ -10,7 +9,6 @@ function Signin() {
   const [password, set_password] = useState('');
   const [submitted, set_submitted] = useState(false);
   const navigator = useNavigate();
-  const exec_once = useRef(false);
   
   // submit signin form
   async function signin(event){
@@ -34,23 +32,13 @@ function Signin() {
         localStorage.setItem('token', user_data.user);
         alert('Check your email for the one-time-token');
         set_submitted(true);
-        console.log(typeof email, email);
-        navigator('/test');
     } 
     else {
         alert('Invalid email and password');
-        navigator('/signin');
+        navigator('/');
     }
   };
 
-  useEffect(() => {
-    if (exec_once.current === true) {
-      // Wait for the email value to be set before rendering Verifytoken component
-      if (submitted && email) {
-        console.log(email);
-      }
-    }
-  }, [email, submitted]);
 
   return (
     <div>
@@ -65,7 +53,7 @@ function Signin() {
           <br/>
         </form>
       </div>)}
-      {submitted && <TestComponent email={email} />}
+      {submitted && <Verifytoken email={email} />}
     </div>
   );
 }
