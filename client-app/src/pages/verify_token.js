@@ -2,8 +2,8 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './styles.css';
 
-function Verifytoken({ email }) {
-  console.log(email);
+function Verifytoken(props) {
+  const email = props.email;
   
   const [is_authenticated, set_authenticated] = useState(false);
   const [token, set_token] = useState('');
@@ -39,13 +39,14 @@ function Verifytoken({ email }) {
           token: token,
         })
       });
+      
+      const res_data = await response.json()
 
-      if (response.status === 'ok') {
+      if (res_data.status === 'ok') {
           navigate('/dashboard');
-      } 
+      }   
       else {
-        const { error } = await response.json();
-        setError(error);
+        setError(res_data.mesasge);
       }
     } 
     catch (err) {

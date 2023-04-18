@@ -1,13 +1,13 @@
 import React, {useState, useEffect} from "react";
 
 function TestComponent (props){
-    const {email} = props;
+    const email = props.email;
     console.log(email);
     const [is_email, set_email] =  useState(false);
 
     useEffect (()=>{
         if (email){
-            set_email(email);
+            set_email(true);
         }
     }, [email]);
 
