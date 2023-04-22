@@ -1,6 +1,10 @@
 # CET324 – Advanced CyberSecurity - Assignment 2
 This comprehensive Readme file contains information on **how to initialize this project**, **project design/architecture** and the overall **flow of control**.
 
+
+> **There are two ReadMe files in this project, README.md and README.txt, they have the same content, however, README.md is markdown file, hence can be previewed in an IDE like vs code for clearer visualization**
+
+
 ## Brief Description
 As part of course assignment, this application is a user authentication system with several features. 
 
@@ -11,6 +15,10 @@ As part of course assignment, this application is a user authentication system w
 > In addition, the application includes a captcha function to ensure that registration requests are made by human users.
 > 
 > The application also includes a One Time Token (OTT) authentication. The system sends a token (via email) to a registered user forauthentication
+>
+>There is also a simple dashboard for users to make a text post.
+>
+>For extra bit of security, the system controls the user from performing manual routes by catching all routes that are not specified in the routes of the system.
 
 ### Tech Stack 
     MongoDB Express ReactJS NodeJS [M E R N]
