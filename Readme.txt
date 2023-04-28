@@ -41,6 +41,51 @@ The system renders on the preferred port in the default browser.
 The system has a minimalist interface, for first time user, you can sign up, where your password strength would be printed, and also you would tested to know if you are human and not a robot using the google captcha api.
 After a successful signup, a user is redirected to the sign-in page to sign, this page also implements a 2 factor authentication through one time token via email.
 Once the user successfully logs in, a dashboard is presented where a user can log some message for it to be displayed, the user can log out safely and be sure that his/her credentials would not be used by another user to access the system
-Project design and architcture
-Project flow
+
+Project architcture
+
+User Interface
+The user interface is the part of the app that users interact with. It is responsible for displaying the login and registration forms, as well as the dashboard. The user interface is written with ReactJS.
+
+Authentication Service
+The authentication service is responsible for verifying the identity of users. It does this by validating the username and password that the user enters. The authentication service can also be used to generate one-time tokens (OTTs) for authentication. The authentication service is written in NodeJS.
+
+Database
+The database is used to store user data such as usernames, passwords, and OTTs. The database is typically a NoSQL db, MongoDB.
+
+Captcha Service
+The captcha service is used to prevent automated bots from registering for accounts. The captcha service typically displays a challenge that is difficult for bots to solve, but easy for humans to solve. In the implementation, google captcha is used.
+
+Dashboard
+The dashboard is a simple page that allows users to make text posts.
+
+The app takes steps to secure user data. This includes using strong encryption for storing passwords and it signals useres about their password strength.
+
+Project Flow
+Here is the flow of usage of your simple authentication app:
+
+The user visits the app's website.
+
+The user clicks on the "Sign Up" button.
+
+The user enters their username, email address, and password.
+
+The app checks the strength of the password. If the password is not strong enough, the app provides feedback to the user.
+
+The app sends a captcha challenge to the user.
+
+The user solves the captcha challenge.
+
+The user clicks on the "Create Account" button.
+
+The app creates a new account for the user.
+
+The user is redirected to the login page to login for the first time.
+
+On successful login, the user can now make text posts on the dashboard.
+
+If the user wants to log out, they can click on the "Log Out" button.
+
+
 Sources / References
+

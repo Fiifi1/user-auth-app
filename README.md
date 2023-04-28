@@ -49,7 +49,49 @@ To successfully setup the working app,  with the copy of this project, you shoul
 
 
 # Project design and architcture
+### User Interface
 
-# Project flow
+The user interface is the part of the app that users interact with. It is responsible for displaying the login and registration forms, as well as the dashboard. The user interface is written with ReactJS.
+
+### Authentication Service
+
+The authentication service is responsible for verifying the identity of users. It does this by validating the username and password that the user enters. The authentication service can also be used to generate one-time tokens (OTTs) for authentication. The authentication service is written in NodeJS.
+
+### Database
+
+The database is used to store user data such as usernames, passwords, and OTTs. The database is typically a NoSQL db, MongoDB.
+
+### Captcha Service
+
+The captcha service is used to prevent automated bots from registering for accounts. The captcha service typically displays a challenge that is difficult for bots to solve, but easy for humans to solve. In the implementation, google captcha is used.
+
+### Dashboard
+
+The dashboard is a simple page that allows users to make text posts.
+
+The app takes steps to secure user data. This includes using strong encryption for storing passwords and it signals useres about their password strength.
+
+# Project Flow
+Here is the flow of usage of your simple authentication app:
+
+1. The user visits the app's website.
+2. The user clicks on the "Sign Up" button.
+3. The user enters their username, email address, and password.
+4. The app checks the strength of the password. If the password is not strong enough, the app provides feedback to the user.
+5. The app sends a captcha challenge to the user.
+6. The user solves the captcha challenge.
+7. The user clicks on the "Create Account" button.
+8. The app creates a new account for the user.
+9. The user is redirected to the login page to login for the first time.
+10. On successful login, the user can now make text posts on the dashboard.
+11. If the user wants to log out, they can click on the "Log Out" button.
+12. If the user forgets their password, they can click on the "Forgot Password" link.
+13. The app sends a password reset link to the user's email address.
+14. The user clicks on the password reset link.
+15. The user enters a new password.
+16. The user clicks on the "Reset Password" button.
+17. The user's password is reset.
+
+18. The user can now log in to the app with their new password.
 
 # Sources / References
