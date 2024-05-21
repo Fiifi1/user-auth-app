@@ -1,4 +1,3 @@
-# CET324 – Advanced CyberSecurity - Assignment 2
 This comprehensive Readme file contains information on **how to initialize this project**, **project design/architecture** and the overall **flow of control**.
 
 
